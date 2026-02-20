@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { insertTutorApplicationSchema, tutorApplications } from './schema';
+import { insertTutorApplicationSchema, tutorApplications } from './schema.js';
 
 export const errorSchemas = {
   validation: z.object({
