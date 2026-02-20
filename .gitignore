@@ -1,6 +1,83 @@
+# Dependencies
 node_modules
+.pnp
+.pnp.js
+
+# Build outputs
 dist
+dist/public
+.serverless
+.vercel
+out
+build
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
+.env.*.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+*.db-wal
+*.db-shm
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# IDE
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea
+*.swp
+*.swo
+*~
 .DS_Store
-server/public
-vite.config.ts.*
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Replit specific
+.replit
+.local/
+*.replit.*
+replit.nix
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Testing
+coverage
+.nyc_output
+
+# Misc
+.vite
+*.tsbuildinfo
 *.tar.gz
+server/public

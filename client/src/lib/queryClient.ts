@@ -16,7 +16,7 @@ export async function apiRequest(
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
     body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
+    credentials: "same-origin", // Changed from "include" to "same-origin" for better security
   });
 
   await throwIfResNotOk(res);
@@ -29,8 +29,8 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey.join("/") as string, {
-      credentials: "include",
+    const res = await fetch(queryKey.join("/"), { // Removed type assertion
+      credentials: "same-origin", // Changed from "include" to "same-origin"
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {

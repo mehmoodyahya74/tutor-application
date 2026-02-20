@@ -1,21 +1,17 @@
 import type { Express } from "express";
-import type { Server } from "http";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
 
-export async function registerRoutes(
-  httpServer: Server,
-  app: Express
-): Promise<Server> {
+export function registerRoutes(app: Express) {
   
   app.post(api.applications.create.path, async (req, res) => {
     try {
       const input = api.applications.create.input.parse(req.body);
       const application = await storage.createApplication(input);
       
-      // Simulate email notification to admin
-      console.log("New Tutor Application Received:", application);
+      // Log for debugging (in production, you might want to use a proper logging service)
+      console.log("New Tutor Application Received:", application.id);
 
       res.status(201).json(application);
     } catch (err) {
@@ -25,14 +21,26 @@ export async function registerRoutes(
           field: err.errors[0].path.join('.'),
         });
       }
-      throw err;
+      
+      // Handle unexpected errors
+      console.error("Application creation error:", err);
+      res.status(500).json({ 
+        message: "Failed to create application" 
+      });
     }
   });
 
   app.get(api.applications.list.path, async (req, res) => {
-    const applications = await storage.getApplications();
-    res.json(applications);
+    try {
+      const applications = await storage.getApplications();
+      res.json(applications);
+    } catch (err) {
+      console.error("Error fetching applications:", err);
+      res.status(500).json({ 
+        message: "Failed to fetch applications" 
+      });
+    }
   });
 
-  return httpServer;
+  // No return value needed
 }

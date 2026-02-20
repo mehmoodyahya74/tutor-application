@@ -30,7 +30,7 @@ export default function Apply() {
     resolver: zodResolver(insertTutorApplicationSchema),
     defaultValues: {
       fullName: "",
-      city: undefined,
+      city: "",
       area: "",
       subjects: [],
       teachingMode: "online",
@@ -104,9 +104,11 @@ export default function Apply() {
                         name="email"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-slate-700 font-semibold">Email Address <span className="text-slate-400 font-normal">(Optional)</span></FormLabel>
+                            <FormLabel className="text-slate-700 font-semibold">
+                              Email Address <span className="text-slate-400 font-normal">(Optional)</span>
+                            </FormLabel>
                             <FormControl>
-                              <Input type="email" placeholder="ali@example.com" className="h-12 rounded-xl" {...field} />
+                              <Input type="email" placeholder="ali@example.com" className="h-12 rounded-xl" {...field} value={field.value || ''} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -132,12 +134,14 @@ export default function Apply() {
                         )}
                       />
 
-                       <FormField
+                      <FormField
                         control={form.control}
                         name="cnicFile"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-slate-700 font-semibold">Profile / CV Link <span className="text-slate-400 font-normal">(Optional)</span></FormLabel>
+                            <FormLabel className="text-slate-700 font-semibold">
+                              Profile/CV Link <span className="text-slate-400 font-normal">(Optional)</span>
+                            </FormLabel>
                             <div className="relative">
                               <FileText className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
                               <FormControl>
@@ -270,7 +274,7 @@ export default function Apply() {
                                               : field.onChange(
                                                   field.value?.filter(
                                                     (value) => value !== subject
-                                                  )
+                                                  ) || []
                                                 )
                                           }}
                                           className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground border-slate-300"
@@ -301,7 +305,7 @@ export default function Apply() {
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-6">
-                       <FormField
+                      <FormField
                         control={form.control}
                         name="qualification"
                         render={({ field }) => (
@@ -315,14 +319,21 @@ export default function Apply() {
                         )}
                       />
 
-                       <FormField
+                      <FormField
                         control={form.control}
                         name="experienceYears"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-slate-700 font-semibold">Experience (Years)</FormLabel>
                             <FormControl>
-                              <Input type="number" min="0" className="h-12 rounded-xl" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                              <Input 
+                                type="number" 
+                                min="0" 
+                                className="h-12 rounded-xl" 
+                                {...field} 
+                                onChange={e => field.onChange(parseInt(e.target.value) || 0)} 
+                                value={field.value}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -330,22 +341,22 @@ export default function Apply() {
                       />
                     </div>
 
-                     <FormField
-                        control={form.control}
-                        name="expectedSalary"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-slate-700 font-semibold">Expected Rate / Salary</FormLabel>
-                            <div className="relative">
-                              <DollarSign className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
-                              <FormControl>
-                                <Input placeholder="e.g. 2000/hr or 25000/month" className="pl-10 h-12 rounded-xl" {...field} />
-                              </FormControl>
-                            </div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                    <FormField
+                      control={form.control}
+                      name="expectedSalary"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-slate-700 font-semibold">Expected Rate / Salary</FormLabel>
+                          <div className="relative">
+                            <DollarSign className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
+                            <FormControl>
+                              <Input placeholder="e.g. 2000/hr or 25000/month" className="pl-10 h-12 rounded-xl" {...field} />
+                            </FormControl>
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </section>
 
                   <div className="pt-8 flex justify-end">

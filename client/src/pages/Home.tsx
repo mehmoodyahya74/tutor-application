@@ -40,9 +40,11 @@ export default function Home() {
                   Apply Now <ArrowRight className="w-5 h-5" />
                 </button>
               </Link>
-              <button className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white text-slate-700 font-bold text-lg border border-slate-200 shadow-sm hover:border-slate-300 hover:bg-slate-50 transition-all duration-300">
-                Learn More
-              </button>
+              <Link href="#benefits">
+                <button className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white text-slate-700 font-bold text-lg border border-slate-200 shadow-sm hover:border-slate-300 hover:bg-slate-50 transition-all duration-300">
+                  Learn More
+                </button>
+              </Link>
             </div>
           </motion.div>
         </div>
@@ -97,13 +99,15 @@ export default function Home() {
               </div>
             </div>
             <div className="flex-1 relative">
-              {/* Abstract decorative image */}
-               <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-4 translate-y-8">
-                  {/* Unsplash: Student studying */}
                   <div className="rounded-2xl overflow-hidden shadow-lg h-48 relative bg-slate-200">
-                    {/* student studying with laptop */}
-                    <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=500&q=80" alt="Student" className="w-full h-full object-cover" />
+                    <img 
+                      src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=500&q=80" 
+                      alt="Student studying with laptop" 
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
                   </div>
                   <div className="p-6 bg-white rounded-2xl shadow-lg border border-slate-100">
                     <div className="text-3xl font-bold text-primary mb-1">98%</div>
@@ -115,10 +119,13 @@ export default function Home() {
                     <div className="text-3xl font-bold mb-1">5k+</div>
                     <div className="text-sm text-primary-foreground/80">Active Tutors</div>
                   </div>
-                  {/* Unsplash: Tutor teaching */}
                   <div className="rounded-2xl overflow-hidden shadow-lg h-48 relative bg-slate-200">
-                    {/* tutor teaching */}
-                    <img src="https://pixabay.com/get/g7ccd910cc37a0c88666193764d5c9e2783cce6128c58780492b6e8b4c12968971d05cad20e0bfe343bd8af2db00b384382ee5d233422e958f0f14e887fa3e123_1280.jpg" alt="Tutor" className="w-full h-full object-cover" />
+                    <img 
+                      src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=500&q=80" 
+                      alt="Tutor teaching student" 
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
                   </div>
                 </div>
               </div>
