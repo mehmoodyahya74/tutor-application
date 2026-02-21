@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowRight, User, MapPin, BookOpen, GraduationCap, DollarSign, Phone, FileText, Calendar, Clock, Heart, Shield } from "lucide-react";
+import { Loader2, ArrowRight, User, MapPin, BookOpen, GraduationCap, DollarSign, Phone, FileText, Calendar, Heart, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 
 const SUBJECTS_LIST = [
@@ -670,7 +670,7 @@ export default function Apply() {
                             <FormItem>
                               <FormLabel className="text-slate-700 font-semibold">Maximum travel distance</FormLabel>
                               <div className="relative">
-                                <Navigation className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
+                                <MapPin className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
                                 <FormControl>
                                   <Input 
                                     placeholder="e.g. 15" 
