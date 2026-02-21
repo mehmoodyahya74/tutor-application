@@ -357,6 +357,7 @@ const CITY_OPTIONS = [...SORTED_CITIES, "Other"];
 export default function Apply() {
   const [, setLocation] = useLocation();
   const mutation = useCreateTutorApplication();
+  const [showOtherCity, setShowOtherCity] = useState(false);
   
   const form = useForm<InsertTutorApplication>({
     resolver: zodResolver(insertTutorApplicationSchema),
@@ -500,7 +501,13 @@ export default function Apply() {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-slate-700 font-semibold">City</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select 
+                              onValueChange={(value) => {
+                                field.onChange(value);
+                                setShowOtherCity(value === "Other");
+                              }} 
+                              defaultValue={field.value}
+                            >
                               <FormControl>
                                 <SelectTrigger className="h-12 rounded-xl bg-white">
                                   <SelectValue placeholder="Select your city" />
@@ -542,6 +549,35 @@ export default function Apply() {
                         )}
                       />
                     </div>
+
+                    {/* Show this input when "Other" is selected */}
+                    {showOtherCity && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="mt-4"
+                      >
+                        <FormField
+                          control={form.control}
+                          name="city"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-slate-700 font-semibold">Please specify your city</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  placeholder="Enter your city name" 
+                                  className="h-12 rounded-xl bg-white" 
+                                  onChange={(e) => field.onChange(e.target.value)}
+                                  value={field.value === "Other" ? "" : field.value}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </motion.div>
+                    )}
                   </section>
 
                   <section className="space-y-6">
