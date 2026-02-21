@@ -5,12 +5,12 @@ import { z } from "zod";
 export const tutorApplications = pgTable("tutor_applications", {
   id: serial("id").primaryKey(),
   fullName: text("full_name").notNull(),
-  gender: text("gender").notNull(), // NEW: Male/Female
+  gender: text("gender").notNull(), 
   city: text("city").notNull(),
   area: text("area").notNull(),
   subjects: text("subjects").array().notNull(),
-  teachingMode: text("teaching_mode").notNull(), // 'online', 'physical', 'both'
-  travelDistance: text("travel_distance"), // NEW: Only for physical/both (5 km, 10 km, 20 km)
+  teachingMode: text("teaching_mode").notNull(), 
+  travelDistance: text("travel_distance"), 
   preferredStudents: text("preferred_students"), // NEW: 'Male Students', 'Female Students', 'Both'
   islamicQualification: text("islamic_qualification").notNull(), // NEW: Hafiz-e-Quran, Qari, etc.
   otherQualification: text("other_qualification"), // NEW: For "Other" option
