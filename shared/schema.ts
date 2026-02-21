@@ -11,22 +11,19 @@ export const tutorApplications = pgTable("tutor_applications", {
   subjects: text("subjects").array().notNull(),
   teachingMode: text("teaching_mode").notNull(), 
   travelDistance: text("travel_distance"), 
-  preferredStudents: text("preferred_students"), // NEW: 'Male Students', 'Female Students', 'Both'
-  islamicQualification: text("islamic_qualification").notNull(), // NEW: Hafiz-e-Quran, Qari, etc.
-  otherQualification: text("other_qualification"), // NEW: For "Other" option
-  instituteName: text("institute_name"), // NEW: Optional
+  preferredStudents: text("preferred_students"),
+  islamicQualification: text("islamic_qualification").notNull(),
+  otherQualification: text("other_qualification"),
+  instituteName: text("institute_name"),
   experienceYears: integer("experience_years").notNull(),
-  demoClassAvailable: text("demo_class_available").notNull(), // NEW: 'yes', 'no', 'uponRequest'
-  daysAvailable: text("days_available").array().notNull(), // NEW: Array of weekdays
-  preferredTimeMorning: boolean("preferred_time_morning").default(false).notNull(), // NEW
-  preferredTimeAfternoon: boolean("preferred_time_afternoon").default(false).notNull(), // NEW
-  preferredTimeEvening: boolean("preferred_time_evening").default(false).notNull(), // NEW
-  ratePerHour: text("rate_per_hour"), // NEW
-  ratePerMonth: text("rate_per_month"), // NEW
-  shortBio: text("short_bio").notNull(), // NEW
-  confirmAccuracy: boolean("confirm_accuracy").default(false).notNull(), // NEW
-  expectedSalary: text("expected_salary").notNull(), // Keeping for backward compatibility
-  cnicFile: text("cnic_file"),
+  demoClassAvailable: text("demo_class_available").notNull(),
+  daysAvailable: text("days_available").array().notNull(),
+  // Replaced three boolean fields with one array field
+  preferredTimeSlots: text("preferred_time_slots").array().default([]).notNull(),
+  ratePerHour: text("rate_per_hour"),
+  ratePerMonth: text("rate_per_month"),
+  shortBio: text("short_bio").notNull(),
+  confirmAccuracy: boolean("confirm_accuracy").default(false).notNull(),
   phoneNumber: varchar("phone_number", { length: 20 }).notNull(),
   email: text("email"),
   createdAt: text("created_at").default("NOW()"),
@@ -43,7 +40,6 @@ export const insertTutorApplicationSchema = createInsertSchema(tutorApplications
     subjects: z.array(z.string()).min(1, "Select at least one subject"),
     experienceYears: z.number().min(0, "Experience years cannot be negative"),
     
-    // New validations
     gender: z.enum(['male', 'female'], {
       errorMap: () => ({ message: "Please select your gender" })
     }),
@@ -78,9 +74,9 @@ export const insertTutorApplicationSchema = createInsertSchema(tutorApplications
       'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
     ])).min(1, "Select at least one day"),
     
-    preferredTimeMorning: z.boolean().default(false),
-    preferredTimeAfternoon: z.boolean().default(false),
-    preferredTimeEvening: z.boolean().default(false),
+    // New: Combined time slots as array
+    preferredTimeSlots: z.array(z.enum(['Morning', 'Afternoon', 'Evening']))
+      .min(1, "Select at least one preferred time slot"),
     
     ratePerHour: z.string().optional(),
     ratePerMonth: z.string().optional(),
@@ -90,8 +86,6 @@ export const insertTutorApplicationSchema = createInsertSchema(tutorApplications
     confirmAccuracy: z.boolean().refine(val => val === true, {
       message: "You must confirm that the information is accurate"
     }),
-    
-    expectedSalary: z.string().optional(),
   })
   // Conditional validation: If "Other" qualification is selected, otherQualification is required
   .refine(data => {
@@ -102,25 +96,7 @@ export const insertTutorApplicationSchema = createInsertSchema(tutorApplications
   }, {
     message: "Please specify your qualification",
     path: ["otherQualification"]
-  })
-  // At least one time slot must be selected
-  .refine(data => {
-    return data.preferredTimeMorning || data.preferredTimeAfternoon || data.preferredTimeEvening;
-  }, {
-    message: "Select at least one preferred time slot",
-    path: ["preferredTimeMorning"]
   });
 
 export type TutorApplication = typeof tutorApplications.$inferSelect;
 export type InsertTutorApplication = z.infer<typeof insertTutorApplicationSchema>;
-
-// Optional: Add validation for file uploads if needed
-export const cnicFileSchema = z.object({
-  filename: z.string(),
-  path: z.string(),
-  size: z.number().max(5 * 1024 * 1024, "File too large (max 5MB)"),
-  mimetype: z.string().refine(
-    (type) => ['image/jpeg', 'image/png', 'application/pdf'].includes(type),
-    "Only JPEG, PNG, or PDF files are allowed"
-  ),
-});
