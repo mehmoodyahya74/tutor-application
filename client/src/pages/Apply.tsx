@@ -359,7 +359,7 @@ export default function Apply() {
       subjects: [],
       teachingMode: "online",
       travelDistance: "",
-      preferredStudents: [],
+      preferredStudents: "",
       islamicQualification: "",
       otherQualification: "",
       instituteName: "",
@@ -707,53 +707,36 @@ export default function Apply() {
                       </motion.div>
                     )}
 
-                    {/* Students You Prefer */}
+                    {/* Students You Prefer - Updated to Radio Group (single selection) */}
                     <FormField
                       control={form.control}
                       name="preferredStudents"
-                      render={() => (
-                        <FormItem>
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
                           <FormLabel className="text-slate-700 font-semibold text-base">
                             Students You Prefer <span className="text-slate-400 font-normal">(Optional)</span>
                           </FormLabel>
-                          <p className="text-sm text-muted-foreground mb-3">
+                          <p className="text-sm text-muted-foreground mb-2">
                             Select your preference for student gender
                           </p>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {['Male Students', 'Female Students', 'Both'].map((pref) => (
-                              <FormField
-                                key={pref}
-                                control={form.control}
-                                name="preferredStudents"
-                                render={({ field }) => {
-                                  return (
-                                    <FormItem
-                                      className="flex flex-row items-start space-x-3 space-y-0 p-4 border rounded-xl bg-white"
-                                    >
-                                      <FormControl>
-                                        <Checkbox
-                                          checked={field.value?.includes(pref)}
-                                          onCheckedChange={(checked) => {
-                                            return checked
-                                              ? field.onChange([...(field.value || []), pref])
-                                              : field.onChange(
-                                                  field.value?.filter(
-                                                    (value) => value !== pref
-                                                  ) || []
-                                                )
-                                          }}
-                                          className="data-[state=checked]:bg-primary"
-                                        />
-                                      </FormControl>
-                                      <FormLabel className="font-normal cursor-pointer">
-                                        {pref}
-                                      </FormLabel>
-                                    </FormItem>
-                                  )
-                                }}
-                              />
-                            ))}
-                          </div>
+                          <FormControl>
+                            <RadioGroup
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                              className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                            >
+                              {['Male Students', 'Female Students', 'Both'].map((pref) => (
+                                <FormItem key={pref}>
+                                  <FormControl>
+                                    <RadioGroupItem value={pref} className="peer sr-only" />
+                                  </FormControl>
+                                  <FormLabel className="flex items-center justify-center rounded-xl border-2 border-muted bg-white p-4 hover:bg-slate-50 hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 peer-data-[state=checked]:text-primary cursor-pointer transition-all">
+                                    {pref}
+                                  </FormLabel>
+                                </FormItem>
+                              ))}
+                            </RadioGroup>
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
