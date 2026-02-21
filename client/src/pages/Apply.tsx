@@ -345,11 +345,14 @@ const CITIES = [
   "Yazman",
   "Zafarwal",
   "Zhob",
-  "Ziarat",
-  "Other"
+  "Ziarat"
 ];
 
+// Sort cities alphabetically
 const SORTED_CITIES = [...CITIES].sort();
+
+// Add "Other" at the end (after sorting)
+const CITY_OPTIONS = [...SORTED_CITIES, "Other"];
 
 export default function Apply() {
   const [, setLocation] = useLocation();
@@ -509,7 +512,7 @@ export default function Apply() {
                                 side="bottom"
                                 align="start"
                               >
-                                {SORTED_CITIES.map(city => (
+                                {CITY_OPTIONS.map(city => (
                                   <SelectItem 
                                     key={city} 
                                     value={city}
