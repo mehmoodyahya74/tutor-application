@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowRight, User, MapPin, BookOpen, GraduationCap, DollarSign, Phone, FileText } from "lucide-react";
+import { Loader2, ArrowRight, User, MapPin, BookOpen, GraduationCap, DollarSign, Phone, FileText, Navigation } from "lucide-react";
 import { motion } from "framer-motion";
 
 const SUBJECTS_LIST = [
@@ -23,8 +23,6 @@ const SUBJECTS_LIST = [
   "Kids Beginner",
   "Adults"
 ];
-
-const TRAVEL_DISTANCES = ["5km", "10km", "20km"];
 
 const CITIES = [
   "Abbottabad",
@@ -364,6 +362,25 @@ export default function Apply() {
   // Check if physical teaching is selected (either "physical" or "both")
   const showTravelDistance = teachingMode === "physical" || teachingMode === "both";
 
+  // Function to add "km" when input loses focus
+  const handleTravelDistanceBlur = (e: React.FocusEvent<HTMLInputElement>, onChange: (value: string) => void) => {
+    let value = e.target.value.trim();
+    
+    // Remove any existing "km" or "KM" or "Km" (case insensitive)
+    value = value.replace(/\s*km\s*$/i, '');
+    
+    // Remove any dots/periods
+    value = value.replace(/\./g, '');
+    
+    // If there's a numeric value, add "km"
+    if (value && !isNaN(Number(value))) {
+      onChange(`${value} km`);
+    } else if (value) {
+      // If it's not purely numeric but has text, just clean it
+      onChange(value);
+    }
+  };
+
   return (
     <Layout>
       <div className="bg-slate-50 min-h-screen py-12">
@@ -618,24 +635,20 @@ export default function Apply() {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel className="text-slate-700 font-semibold">Maximum travel distance</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <div className="relative">
+                                <Navigation className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
                                 <FormControl>
-                                  <SelectTrigger className="h-12 rounded-xl bg-white">
-                                    <SelectValue placeholder="Select max distance" />
-                                  </SelectTrigger>
+                                  <Input 
+                                    placeholder="e.g. 15" 
+                                    className="pl-10 h-12 rounded-xl bg-white" 
+                                    {...field}
+                                    onBlur={(e) => handleTravelDistanceBlur(e, field.onChange)}
+                                  />
                                 </FormControl>
-                                <SelectContent className="bg-white border border-slate-200 shadow-lg">
-                                  {TRAVEL_DISTANCES.map(distance => (
-                                    <SelectItem 
-                                      key={distance} 
-                                      value={distance}
-                                      className="hover:bg-slate-100 cursor-pointer"
-                                    >
-                                      {distance}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                              </div>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Enter a number (km will be added automatically)
+                              </p>
                               <FormMessage />
                             </FormItem>
                           )}
