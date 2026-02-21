@@ -7,11 +7,12 @@ import { useCreateTutorApplication } from "@/hooks/use-tutor-applications";
 import { Layout } from "@/components/ui/Layout";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowRight, User, MapPin, BookOpen, GraduationCap, DollarSign, Phone, FileText, Navigation } from "lucide-react";
+import { Loader2, ArrowRight, User, MapPin, BookOpen, GraduationCap, DollarSign, Phone, FileText, Calendar, Clock, Heart, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 
 const SUBJECTS_LIST = [
@@ -22,6 +23,16 @@ const SUBJECTS_LIST = [
   "Tafseer",
   "Kids Beginner",
   "Adults"
+];
+
+const WEEKDAYS = [
+  "Monday",
+  "Tuesday", 
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday"
 ];
 
 const CITIES = [
@@ -344,8 +355,18 @@ export default function Apply() {
       subjects: [],
       teachingMode: "online",
       travelDistance: "",
-      qualification: "",
+      islamicQualification: "",
+      instituteName: "",
       experienceYears: 0,
+      demoClassAvailable: "",
+      daysAvailable: [],
+      preferredTimeMorning: false,
+      preferredTimeAfternoon: false,
+      preferredTimeEvening: false,
+      ratePerHour: "",
+      ratePerMonth: "",
+      shortBio: "",
+      confirmAccuracy: false,
       expectedSalary: "",
       phoneNumber: "",
       email: "",
@@ -393,7 +414,7 @@ export default function Apply() {
           >
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Tutor Application</h1>
             <p className="text-muted-foreground text-lg">
-              Complete the form below to join our elite network of educators.
+              Complete the form below to join our elite network of Quran educators.
             </p>
           </motion.div>
 
@@ -406,6 +427,7 @@ export default function Apply() {
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
                   
+                  {/* Section 1: Personal Details */}
                   <section className="space-y-6">
                     <div className="flex items-center gap-3 pb-4 border-b">
                       <div className="bg-blue-50 p-2 rounded-lg text-primary">
@@ -420,7 +442,9 @@ export default function Apply() {
                         name="fullName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-slate-700 font-semibold">Full Name</FormLabel>
+                            <FormLabel className="text-slate-700 font-semibold">
+                              Full Name <span className="text-red-500">*</span>
+                            </FormLabel>
                             <FormControl>
                               <Input placeholder="e.g. Ali Khan" className="h-12 rounded-xl bg-white" {...field} />
                             </FormControl>
@@ -452,7 +476,9 @@ export default function Apply() {
                         name="phoneNumber"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-slate-700 font-semibold">Phone Number</FormLabel>
+                            <FormLabel className="text-slate-700 font-semibold">
+                              Phone Number <span className="text-red-500">*</span>
+                            </FormLabel>
                             <div className="relative">
                               <Phone className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
                               <FormControl>
@@ -485,6 +511,7 @@ export default function Apply() {
                     </div>
                   </section>
 
+                  {/* Section 2: Location */}
                   <section className="space-y-6">
                     <div className="flex items-center gap-3 pb-4 border-b">
                       <div className="bg-purple-50 p-2 rounded-lg text-purple-600">
@@ -499,7 +526,9 @@ export default function Apply() {
                         name="city"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-slate-700 font-semibold">City</FormLabel>
+                            <FormLabel className="text-slate-700 font-semibold">
+                              City <span className="text-red-500">*</span>
+                            </FormLabel>
                             <Select 
                               onValueChange={(value) => {
                                 field.onChange(value);
@@ -539,7 +568,9 @@ export default function Apply() {
                         name="area"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-slate-700 font-semibold">Area / Neighborhood</FormLabel>
+                            <FormLabel className="text-slate-700 font-semibold">
+                              Area / Neighborhood <span className="text-red-500">*</span>
+                            </FormLabel>
                             <FormControl>
                               <Input placeholder="e.g. DHA, Gulberg, F-10" className="h-12 rounded-xl bg-white" {...field} />
                             </FormControl>
@@ -579,6 +610,7 @@ export default function Apply() {
                     )}
                   </section>
 
+                  {/* Section 3: Teaching Preferences */}
                   <section className="space-y-6">
                     <div className="flex items-center gap-3 pb-4 border-b">
                       <div className="bg-green-50 p-2 rounded-lg text-green-600">
@@ -592,7 +624,9 @@ export default function Apply() {
                       name="teachingMode"
                       render={({ field }) => (
                         <FormItem className="space-y-3">
-                          <FormLabel className="text-slate-700 font-semibold">Preferred Mode of Teaching</FormLabel>
+                          <FormLabel className="text-slate-700 font-semibold">
+                            Preferred Mode of Teaching <span className="text-red-500">*</span>
+                          </FormLabel>
                           <FormControl>
                             <RadioGroup
                               onValueChange={(value) => {
@@ -662,7 +696,9 @@ export default function Apply() {
                       render={() => (
                         <FormItem>
                           <div className="mb-4">
-                            <FormLabel className="text-slate-700 font-semibold text-lg">Subjects You Can Teach</FormLabel>
+                            <FormLabel className="text-slate-700 font-semibold text-lg">
+                              Subjects You Can Teach <span className="text-red-500">*</span>
+                            </FormLabel>
                           </div>
                           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                             {SUBJECTS_LIST.map((subject) => (
@@ -706,24 +742,53 @@ export default function Apply() {
                     />
                   </section>
 
+                  {/* Section 4: Qualification & Experience */}
                   <section className="space-y-6">
                     <div className="flex items-center gap-3 pb-4 border-b">
                       <div className="bg-orange-50 p-2 rounded-lg text-orange-600">
                         <GraduationCap className="w-6 h-6" />
                       </div>
-                      <h2 className="text-2xl font-bold text-slate-800">Qualification & Rates</h2>
+                      <h2 className="text-2xl font-bold text-slate-800">Qualification & Experience</h2>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-6">
                       <FormField
                         control={form.control}
-                        name="qualification"
+                        name="islamicQualification"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-slate-700 font-semibold">Highest Qualification</FormLabel>
-                            <FormControl>
-                              <Input placeholder="e.g. BS Computer Science" className="h-12 rounded-xl bg-white" {...field} />
-                            </FormControl>
+                            <FormLabel className="text-slate-700 font-semibold">
+                              Highest Islamic Qualification <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="h-12 rounded-xl bg-white">
+                                  <SelectValue placeholder="Select your qualification" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent className="bg-white border border-slate-200 shadow-lg">
+                                {[
+                                  "Hafiz-ul-Quran",
+                                  "Qari",
+                                  "Alim / Alimah",
+                                  "Mufti",
+                                  "Mufassir", 
+                                  "Muhaddith",
+                                  "Ijazah (Sanad)",
+                                  "Arabic Diploma",
+                                  "Tajweed Certificate",
+                                  "Other"
+                                ].map(qual => (
+                                  <SelectItem 
+                                    key={qual} 
+                                    value={qual}
+                                    className="hover:bg-slate-100 cursor-pointer"
+                                  >
+                                    {qual}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -731,18 +796,18 @@ export default function Apply() {
 
                       <FormField
                         control={form.control}
-                        name="experienceYears"
+                        name="instituteName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-slate-700 font-semibold">Experience (Years)</FormLabel>
+                            <FormLabel className="text-slate-700 font-semibold">
+                              Institute Name <span className="text-slate-400 font-normal">(Optional)</span>
+                            </FormLabel>
                             <FormControl>
                               <Input 
-                                type="number" 
-                                min="0" 
+                                placeholder="e.g. Jamia Al-Kauthar, Wifaq-ul-Madaris" 
                                 className="h-12 rounded-xl bg-white" 
                                 {...field} 
-                                onChange={e => field.onChange(parseInt(e.target.value) || 0)} 
-                                value={field.value}
+                                value={field.value || ''}
                               />
                             </FormControl>
                             <FormMessage />
@@ -751,17 +816,343 @@ export default function Apply() {
                       />
                     </div>
 
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="experienceYears"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-slate-700 font-semibold">
+                              Years of Teaching Experience <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="number" 
+                                min="0" 
+                                step="1"
+                                placeholder="e.g. 5" 
+                                className="h-12 rounded-xl bg-white" 
+                                {...field} 
+                                onChange={e => field.onChange(parseInt(e.target.value) || 0)} 
+                                value={field.value}
+                              />
+                            </FormControl>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Enter total years of Quran teaching experience
+                            </p>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="demoClassAvailable"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-slate-700 font-semibold">
+                              Demo Class Available? <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="h-12 rounded-xl bg-white">
+                                  <SelectValue placeholder="Select option" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent className="bg-white border border-slate-200 shadow-lg">
+                                <SelectItem value="yes" className="hover:bg-slate-100 cursor-pointer">
+                                  Yes - Available for demo session
+                                </SelectItem>
+                                <SelectItem value="no" className="hover:bg-slate-100 cursor-pointer">
+                                  No - Not available
+                                </SelectItem>
+                                <SelectItem value="uponRequest" className="hover:bg-slate-100 cursor-pointer">
+                                  Upon Request - Can arrange with notice
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Demo classes help students evaluate your teaching style
+                            </p>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </section>
+
+                  {/* Section 5: Availability */}
+                  <section className="space-y-6">
+                    <div className="flex items-center gap-3 pb-4 border-b">
+                      <div className="bg-blue-100 p-2 rounded-lg text-blue-600">
+                        <Calendar className="w-6 h-6" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-slate-800">Availability</h2>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div>
+                        <FormLabel className="text-slate-700 font-semibold text-base">
+                          Days Available <span className="text-red-500">*</span>
+                        </FormLabel>
+                        <p className="text-sm text-muted-foreground mb-3">
+                          Select all days you are available for teaching
+                        </p>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                          {WEEKDAYS.map((day) => (
+                            <FormField
+                              key={day}
+                              control={form.control}
+                              name="daysAvailable"
+                              render={({ field }) => {
+                                return (
+                                  <FormItem
+                                    className="flex flex-row items-start space-x-3 space-y-0"
+                                  >
+                                    <FormControl>
+                                      <Checkbox
+                                        checked={field.value?.includes(day)}
+                                        onCheckedChange={(checked) => {
+                                          return checked
+                                            ? field.onChange([...(field.value || []), day])
+                                            : field.onChange(
+                                                field.value?.filter(
+                                                  (value) => value !== day
+                                                ) || []
+                                              )
+                                        }}
+                                        className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground border-slate-300"
+                                      />
+                                    </FormControl>
+                                    <FormLabel className="font-normal cursor-pointer text-slate-600">
+                                      {day}
+                                    </FormLabel>
+                                  </FormItem>
+                                )
+                              }}
+                            />
+                          ))}
+                        </div>
+                        <FormMessage />
+                      </div>
+
+                      <div className="mt-6">
+                        <FormLabel className="text-slate-700 font-semibold text-base">
+                          Preferred Time Slots <span className="text-red-500">*</span>
+                        </FormLabel>
+                        <p className="text-sm text-muted-foreground mb-3">
+                          Select all time slots you are available
+                        </p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <FormField
+                            control={form.control}
+                            name="preferredTimeMorning"
+                            render={({ field }) => (
+                              <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 border rounded-xl bg-white">
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                    className="data-[state=checked]:bg-primary"
+                                  />
+                                </FormControl>
+                                <div className="space-y-1">
+                                  <FormLabel className="font-semibold cursor-pointer">
+                                    Morning
+                                  </FormLabel>
+                                  <p className="text-xs text-muted-foreground">
+                                    5:00 AM - 12:00 PM
+                                  </p>
+                                </div>
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name="preferredTimeAfternoon"
+                            render={({ field }) => (
+                              <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 border rounded-xl bg-white">
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                    className="data-[state=checked]:bg-primary"
+                                  />
+                                </FormControl>
+                                <div className="space-y-1">
+                                  <FormLabel className="font-semibold cursor-pointer">
+                                    Afternoon
+                                  </FormLabel>
+                                  <p className="text-xs text-muted-foreground">
+                                    12:00 PM - 5:00 PM
+                                  </p>
+                                </div>
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name="preferredTimeEvening"
+                            render={({ field }) => (
+                              <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 border rounded-xl bg-white">
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                    className="data-[state=checked]:bg-primary"
+                                  />
+                                </FormControl>
+                                <div className="space-y-1">
+                                  <FormLabel className="font-semibold cursor-pointer">
+                                    Evening
+                                  </FormLabel>
+                                  <p className="text-xs text-muted-foreground">
+                                    5:00 PM - 10:00 PM
+                                  </p>
+                                </div>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <FormMessage />
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* Section 6: Expected Rate */}
+                  <section className="space-y-6">
+                    <div className="flex items-center gap-3 pb-4 border-b">
+                      <div className="bg-emerald-50 p-2 rounded-lg text-emerald-600">
+                        <DollarSign className="w-6 h-6" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-slate-800">Expected Rate</h2>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="ratePerHour"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-slate-700 font-semibold">
+                              Per Hour Rate <span className="text-slate-400 font-normal">(PKR)</span>
+                            </FormLabel>
+                            <div className="relative">
+                              <span className="absolute left-3 top-3.5 text-slate-500">Rs.</span>
+                              <FormControl>
+                                <Input 
+                                  type="number"
+                                  min="0"
+                                  placeholder="e.g. 500" 
+                                  className="pl-12 h-12 rounded-xl bg-white" 
+                                  {...field}
+                                  value={field.value || ''}
+                                />
+                              </FormControl>
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Your rate per hour of teaching
+                            </p>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="ratePerMonth"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-slate-700 font-semibold">
+                              Per Month Rate <span className="text-slate-400 font-normal">(PKR) - Optional</span>
+                            </FormLabel>
+                            <div className="relative">
+                              <span className="absolute left-3 top-3.5 text-slate-500">Rs.</span>
+                              <FormControl>
+                                <Input 
+                                  type="number"
+                                  min="0"
+                                  placeholder="e.g. 8000" 
+                                  className="pl-12 h-12 rounded-xl bg-white" 
+                                  {...field}
+                                  value={field.value || ''}
+                                />
+                              </FormControl>
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Monthly package rate (if applicable)
+                            </p>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </section>
+
+                  {/* Section 7: Short Bio */}
+                  <section className="space-y-6">
+                    <div className="flex items-center gap-3 pb-4 border-b">
+                      <div className="bg-pink-50 p-2 rounded-lg text-pink-600">
+                        <Heart className="w-6 h-6" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-slate-800">Short Bio</h2>
+                    </div>
+
                     <FormField
                       control={form.control}
-                      name="expectedSalary"
+                      name="shortBio"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-slate-700 font-semibold">Expected Rate / Salary</FormLabel>
-                          <div className="relative">
-                            <DollarSign className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
-                            <FormControl>
-                              <Input placeholder="e.g. 2000/hr or 25000/month" className="pl-10 h-12 rounded-xl bg-white" {...field} />
-                            </FormControl>
+                          <FormLabel className="text-slate-700 font-semibold">
+                            Tell us about yourself <span className="text-red-500">*</span>
+                          </FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Briefly describe your teaching style and experience. Parents connect emotionally here."
+                              className="min-h-[120px] rounded-xl bg-white p-4"
+                              {...field}
+                              value={field.value || ''}
+                            />
+                          </FormControl>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            2-3 lines recommended. Share your passion for teaching Quran and your approach with students.
+                          </p>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </section>
+
+                  {/* Section 8: Confirmation */}
+                  <section className="space-y-6">
+                    <div className="flex items-center gap-3 pb-4 border-b">
+                      <div className="bg-amber-50 p-2 rounded-lg text-amber-600">
+                        <Shield className="w-6 h-6" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-slate-800">Confirmation</h2>
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="confirmAccuracy"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 border rounded-xl bg-slate-50">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                              className="data-[state=checked]:bg-primary mt-1"
+                            />
+                          </FormControl>
+                          <div className="space-y-1">
+                            <FormLabel className="font-semibold text-slate-700 cursor-pointer">
+                              I confirm that all provided information is accurate
+                            </FormLabel>
+                            <p className="text-sm text-muted-foreground">
+                              By checking this box, you confirm that the information provided is true and correct to the best of your knowledge.
+                            </p>
                           </div>
                           <FormMessage />
                         </FormItem>
