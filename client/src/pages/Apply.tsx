@@ -24,6 +24,8 @@ const SUBJECTS_LIST = [
   "Adults"
 ];
 
+const TRAVEL_DISTANCES = ["5km", "10km", "20km"];
+
 const CITIES = [
   "Abbottabad",
   "Adezai",
@@ -333,6 +335,7 @@ export default function Apply() {
   const [, setLocation] = useLocation();
   const mutation = useCreateTutorApplication();
   const [showOtherCity, setShowOtherCity] = useState(false);
+  const [teachingMode, setTeachingMode] = useState("online");
   
   const form = useForm<InsertTutorApplication>({
     resolver: zodResolver(insertTutorApplicationSchema),
@@ -342,6 +345,7 @@ export default function Apply() {
       area: "",
       subjects: [],
       teachingMode: "online",
+      travelDistance: "",
       qualification: "",
       experienceYears: 0,
       expectedSalary: "",
@@ -356,6 +360,9 @@ export default function Apply() {
       onSuccess: () => setLocation("/success"),
     });
   };
+
+  // Check if physical teaching is selected (either "physical" or "both")
+  const showTravelDistance = teachingMode === "physical" || teachingMode === "both";
 
   return (
     <Layout>
@@ -571,7 +578,10 @@ export default function Apply() {
                           <FormLabel className="text-slate-700 font-semibold">Preferred Mode of Teaching</FormLabel>
                           <FormControl>
                             <RadioGroup
-                              onValueChange={field.onChange}
+                              onValueChange={(value) => {
+                                field.onChange(value);
+                                setTeachingMode(value);
+                              }}
                               defaultValue={field.value}
                               className="grid grid-cols-1 md:grid-cols-3 gap-4"
                             >
@@ -594,6 +604,44 @@ export default function Apply() {
                         </FormItem>
                       )}
                     />
+
+                    {/* Travel Distance - appears only when physical or both is selected */}
+                    {showTravelDistance && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <FormField
+                          control={form.control}
+                          name="travelDistance"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-slate-700 font-semibold">Maximum travel distance</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger className="h-12 rounded-xl bg-white">
+                                    <SelectValue placeholder="Select max distance" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent className="bg-white border border-slate-200 shadow-lg">
+                                  {TRAVEL_DISTANCES.map(distance => (
+                                    <SelectItem 
+                                      key={distance} 
+                                      value={distance}
+                                      className="hover:bg-slate-100 cursor-pointer"
+                                    >
+                                      {distance}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </motion.div>
+                    )}
 
                     <FormField
                       control={form.control}
