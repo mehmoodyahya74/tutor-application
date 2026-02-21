@@ -24,7 +24,42 @@ const SUBJECTS_LIST = [
   "Adults"
 ];
 
-const CITIES = ["Karachi", "Lahore", "Islamabad", "Rawalpindi", "Faisalabad", "Multan", "Peshawar", "Quetta", "Other"];
+const CITIES = [
+  // Punjab
+  "Lahore", "Faisalabad", "Rawalpindi", "Multan", "Gujranwala", "Sialkot", "Gujrat", "Sheikhupura",
+  "Jhelum", "Sargodha", "Bahawalpur", "Rahim Yar Khan", "Sahiwal", "Okara", "Pakpattan", "Chiniot",
+  "Kasur", "Dera Ghazi Khan", "Mianwali", "Bhakkar", "Khanewal", "Vehari", "Lodhran", "Toba Tek Singh",
+  "Jhang", "Hafizabad", "Mandi Bahauddin", "Narowal", "Khosab", "Murree", "Attock", "Chakwal",
+  "Talagang", "Wah Cantt", "Kamoke", "Muridke", "Shakargarh", "Burewala", "Arifwala", "Hasilpur",
+  
+  // Sindh
+  "Karachi", "Hyderabad", "Sukkur", "Larkana", "Nawabshah", "Mirpur Khas", "Jacobabad", "Shikarpur",
+  "Dadu", "Tando Adam", "Khairpur", "Badin", "Thatta", "Umerkot", "Ghotki", "Kandhkot",
+  "Kashmore", "Sanghar", "Matiari", "Tando Allahyar", "Jamshoro", "Qambar Shahdadkot",
+  
+  // Khyber Pakhtunkhwa
+  "Peshawar", "Abbottabad", "Mardan", "Swat", "Mingora", "Kohat", "Bannu", "Dera Ismail Khan",
+  "Charsadda", "Nowshera", "Swabi", "Haripur", "Mansehra", "Batkhela", "Timergara", "Lower Dir",
+  "Upper Dir", "Chitral", "Hangu", "Karak", "Lakki Marwat", "Tank", "Torghar", "Buner",
+  
+  // Balochistan
+  "Quetta", "Gwadar", "Turbat", "Khuzdar", "Chaman", "Sibi", "Zhob", "Loralai",
+  "Dera Murad Jamali", "Usta Muhammad", "Qilla Abdullah", "Qilla Saifullah", "Pishin", "Mastung",
+  "Kalat", "Kharan", "Panjgur", "Washuk", "Awaran", "Lasbela", "Hub", "Nushki",
+  
+  // Islamabad Capital Territory
+  "Islamabad",
+  
+  // Azad Kashmir
+  "Muzaffarabad", "Mirpur", "Rawalakot", "Kotli", "Bhimber", "Bagh", "Havali", "Palandri",
+  
+  // Gilgit-Baltistan
+  "Gilgit", "Skardu", "Hunza", "Nagar", "Ghanche", "Shigar", "Kharmang", "Astore",
+  "Diamer", "Ghizer", "Gupis-Yasin", "Punial", "Ishkoman"
+];
+
+// Sort cities alphabetically for better user experience
+const SORTED_CITIES = [...CITIES].sort();
 
 export default function Apply() {
   const [, setLocation] = useLocation();
@@ -178,8 +213,8 @@ export default function Apply() {
                                   <SelectValue placeholder="Select your city" />
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent className="bg-white border border-slate-200 shadow-lg">
-                                {CITIES.map(city => (
+                              <SelectContent className="bg-white border border-slate-200 shadow-lg max-h-80">
+                                {SORTED_CITIES.map(city => (
                                   <SelectItem 
                                     key={city} 
                                     value={city}
