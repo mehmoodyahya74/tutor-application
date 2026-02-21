@@ -35,6 +35,8 @@ const WEEKDAYS = [
   "Sunday"
 ];
 
+const TRAVEL_DISTANCES = ["5 km", "10 km", "20 km"];
+
 const CITIES = [
   "Abbottabad",
   "Adezai",
@@ -345,17 +347,21 @@ export default function Apply() {
   const mutation = useCreateTutorApplication();
   const [showOtherCity, setShowOtherCity] = useState(false);
   const [teachingMode, setTeachingMode] = useState("online");
+  const [showOtherQualification, setShowOtherQualification] = useState(false);
   
   const form = useForm<InsertTutorApplication>({
     resolver: zodResolver(insertTutorApplicationSchema),
     defaultValues: {
       fullName: "",
+      gender: "",
       city: "",
       area: "",
       subjects: [],
       teachingMode: "online",
       travelDistance: "",
+      preferredStudents: [],
       islamicQualification: "",
+      otherQualification: "",
       instituteName: "",
       experienceYears: 0,
       demoClassAvailable: "",
@@ -382,25 +388,6 @@ export default function Apply() {
 
   // Check if physical teaching is selected (either "physical" or "both")
   const showTravelDistance = teachingMode === "physical" || teachingMode === "both";
-
-  // Function to add "km" when input loses focus
-  const handleTravelDistanceBlur = (e: React.FocusEvent<HTMLInputElement>, onChange: (value: string) => void) => {
-    let value = e.target.value.trim();
-    
-    // Remove any existing "km" or "KM" or "Km" (case insensitive)
-    value = value.replace(/\s*km\s*$/i, '');
-    
-    // Remove any dots/periods
-    value = value.replace(/\./g, '');
-    
-    // If there's a numeric value, add "km"
-    if (value && !isNaN(Number(value))) {
-      onChange(`${value} km`);
-    } else if (value) {
-      // If it's not purely numeric but has text, just clean it
-      onChange(value);
-    }
-  };
 
   return (
     <Layout>
@@ -455,6 +442,32 @@ export default function Apply() {
                       
                       <FormField
                         control={form.control}
+                        name="gender"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-slate-700 font-semibold">
+                              Gender <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="h-12 rounded-xl bg-white">
+                                  <SelectValue placeholder="Select gender" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent className="bg-white border border-slate-200 shadow-lg">
+                                <SelectItem value="male" className="hover:bg-slate-100 cursor-pointer">Male</SelectItem>
+                                <SelectItem value="female" className="hover:bg-slate-100 cursor-pointer">Female</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
                         name="email"
                         render={({ field }) => (
                           <FormItem>
@@ -468,9 +481,7 @@ export default function Apply() {
                           </FormItem>
                         )}
                       />
-                    </div>
 
-                    <div className="grid md:grid-cols-2 gap-6">
                       <FormField
                         control={form.control}
                         name="phoneNumber"
@@ -489,7 +500,9 @@ export default function Apply() {
                           </FormItem>
                         )}
                       />
+                    </div>
 
+                    <div className="grid md:grid-cols-2 gap-6">
                       <FormField
                         control={form.control}
                         name="cnicFile"
@@ -669,26 +682,82 @@ export default function Apply() {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel className="text-slate-700 font-semibold">Maximum travel distance</FormLabel>
-                              <div className="relative">
-                                <MapPin className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
-                                  <Input 
-                                    placeholder="e.g. 15" 
-                                    className="pl-10 h-12 rounded-xl bg-white" 
-                                    {...field}
-                                    onBlur={(e) => handleTravelDistanceBlur(e, field.onChange)}
-                                  />
+                                  <SelectTrigger className="h-12 rounded-xl bg-white">
+                                    <SelectValue placeholder="Select max distance" />
+                                  </SelectTrigger>
                                 </FormControl>
-                              </div>
-                              <p className="text-xs text-muted-foreground mt-1">
-                                Enter a number (km will be added automatically)
-                              </p>
+                                <SelectContent className="bg-white border border-slate-200 shadow-lg">
+                                  {TRAVEL_DISTANCES.map(distance => (
+                                    <SelectItem 
+                                      key={distance} 
+                                      value={distance}
+                                      className="hover:bg-slate-100 cursor-pointer"
+                                    >
+                                      {distance}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
                       </motion.div>
                     )}
+
+                    {/* Students You Prefer */}
+                    <FormField
+                      control={form.control}
+                      name="preferredStudents"
+                      render={() => (
+                        <FormItem>
+                          <FormLabel className="text-slate-700 font-semibold text-base">
+                            Students You Prefer <span className="text-slate-400 font-normal">(Optional)</span>
+                          </FormLabel>
+                          <p className="text-sm text-muted-foreground mb-3">
+                            Select your preference for student gender
+                          </p>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {['Male Students', 'Female Students', 'Both'].map((pref) => (
+                              <FormField
+                                key={pref}
+                                control={form.control}
+                                name="preferredStudents"
+                                render={({ field }) => {
+                                  return (
+                                    <FormItem
+                                      className="flex flex-row items-start space-x-3 space-y-0 p-4 border rounded-xl bg-white"
+                                    >
+                                      <FormControl>
+                                        <Checkbox
+                                          checked={field.value?.includes(pref)}
+                                          onCheckedChange={(checked) => {
+                                            return checked
+                                              ? field.onChange([...(field.value || []), pref])
+                                              : field.onChange(
+                                                  field.value?.filter(
+                                                    (value) => value !== pref
+                                                  ) || []
+                                                )
+                                          }}
+                                          className="data-[state=checked]:bg-primary"
+                                        />
+                                      </FormControl>
+                                      <FormLabel className="font-normal cursor-pointer">
+                                        {pref}
+                                      </FormLabel>
+                                    </FormItem>
+                                  )
+                                }}
+                              />
+                            ))}
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
                     <FormField
                       control={form.control}
@@ -760,7 +829,13 @@ export default function Apply() {
                             <FormLabel className="text-slate-700 font-semibold">
                               Highest Islamic Qualification <span className="text-red-500">*</span>
                             </FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select 
+                              onValueChange={(value) => {
+                                field.onChange(value);
+                                setShowOtherQualification(value === "Other");
+                              }} 
+                              defaultValue={field.value}
+                            >
                               <FormControl>
                                 <SelectTrigger className="h-12 rounded-xl bg-white">
                                   <SelectValue placeholder="Select your qualification" />
@@ -768,15 +843,10 @@ export default function Apply() {
                               </FormControl>
                               <SelectContent className="bg-white border border-slate-200 shadow-lg">
                                 {[
-                                  "Hafiz-ul-Quran",
+                                  "Hafiz-e-Quran",
                                   "Qari",
-                                  "Alim / Alimah",
-                                  "Mufti",
-                                  "Mufassir", 
-                                  "Muhaddith",
-                                  "Ijazah (Sanad)",
-                                  "Arabic Diploma",
-                                  "Tajweed Certificate",
+                                  "Alim / Alima",
+                                  "Tajweed Certified",
                                   "Other"
                                 ].map(qual => (
                                   <SelectItem 
@@ -793,6 +863,35 @@ export default function Apply() {
                           </FormItem>
                         )}
                       />
+
+                      {showOtherQualification && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <FormField
+                            control={form.control}
+                            name="otherQualification"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-slate-700 font-semibold">
+                                  Please specify <span className="text-red-500">*</span>
+                                </FormLabel>
+                                <FormControl>
+                                  <Input 
+                                    placeholder="e.g. Ijazah, Sanad, etc." 
+                                    className="h-12 rounded-xl bg-white" 
+                                    {...field} 
+                                    value={field.value || ''}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </motion.div>
+                      )}
 
                       <FormField
                         control={form.control}
