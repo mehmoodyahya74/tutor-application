@@ -14,10 +14,15 @@ import { Button } from "@/components/ui/button";
 import { Loader2, ArrowRight, User, MapPin, BookOpen, GraduationCap, DollarSign, Phone, FileText } from "lucide-react";
 import { motion } from "framer-motion";
 
+// Updated subjects list for Quranic/Islamic education
 const SUBJECTS_LIST = [
-  "Mathematics", "Physics", "Chemistry", "Biology", 
-  "English", "Computer Science", "Economics", "History",
-  "Accounting", "Statistics", "Art", "Music"
+  "Nazra (Basic Quran Reading)",
+  "Hifz",
+  "Tajweed",
+  "Translation",
+  "Tafseer",
+  "Kids Beginner",
+  "Adults"
 ];
 
 const CITIES = ["Karachi", "Lahore", "Islamabad", "Rawalpindi", "Faisalabad", "Multan", "Peshawar", "Quetta", "Other"];
