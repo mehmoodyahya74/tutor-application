@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import { Loader2, ArrowRight, User, MapPin, BookOpen, GraduationCap, DollarSign, Phone, FileText } from "lucide-react";
 import { motion } from "framer-motion";
 
-// Updated subjects list for Quranic/Islamic education
 const SUBJECTS_LIST = [
   "Nazra (Basic Quran Reading)",
   "Hifz",
@@ -71,7 +70,6 @@ export default function Apply() {
           </motion.div>
 
           <div className="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
-            {/* Progress/Header Strip */}
             <div className="h-2 bg-slate-100 w-full">
               <div className="h-full bg-primary w-1/3 rounded-r-full" />
             </div>
@@ -80,7 +78,6 @@ export default function Apply() {
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
                   
-                  {/* Section 1: Personal Info */}
                   <section className="space-y-6">
                     <div className="flex items-center gap-3 pb-4 border-b">
                       <div className="bg-blue-50 p-2 rounded-lg text-primary">
@@ -97,7 +94,7 @@ export default function Apply() {
                           <FormItem>
                             <FormLabel className="text-slate-700 font-semibold">Full Name</FormLabel>
                             <FormControl>
-                              <Input placeholder="e.g. Ali Khan" className="h-12 rounded-xl" {...field} />
+                              <Input placeholder="e.g. Ali Khan" className="h-12 rounded-xl bg-white" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -113,7 +110,7 @@ export default function Apply() {
                               Email Address <span className="text-slate-400 font-normal">(Optional)</span>
                             </FormLabel>
                             <FormControl>
-                              <Input type="email" placeholder="ali@example.com" className="h-12 rounded-xl" {...field} value={field.value || ''} />
+                              <Input type="email" placeholder="ali@example.com" className="h-12 rounded-xl bg-white" {...field} value={field.value || ''} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -131,7 +128,7 @@ export default function Apply() {
                             <div className="relative">
                               <Phone className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
                               <FormControl>
-                                <Input placeholder="0300 1234567" className="pl-10 h-12 rounded-xl" {...field} />
+                                <Input placeholder="0300 1234567" className="pl-10 h-12 rounded-xl bg-white" {...field} />
                               </FormControl>
                             </div>
                             <FormMessage />
@@ -150,7 +147,7 @@ export default function Apply() {
                             <div className="relative">
                               <FileText className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
                               <FormControl>
-                                <Input placeholder="Google Drive / LinkedIn / Dropbox link" className="pl-10 h-12 rounded-xl" {...field} value={field.value || ''} />
+                                <Input placeholder="Google Drive / LinkedIn / Dropbox link" className="pl-10 h-12 rounded-xl bg-white" {...field} value={field.value || ''} />
                               </FormControl>
                             </div>
                             <FormMessage />
@@ -160,7 +157,6 @@ export default function Apply() {
                     </div>
                   </section>
 
-                  {/* Section 2: Location */}
                   <section className="space-y-6">
                     <div className="flex items-center gap-3 pb-4 border-b">
                       <div className="bg-purple-50 p-2 rounded-lg text-purple-600">
@@ -178,13 +174,19 @@ export default function Apply() {
                             <FormLabel className="text-slate-700 font-semibold">City</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
-                                <SelectTrigger className="h-12 rounded-xl">
+                                <SelectTrigger className="h-12 rounded-xl bg-white">
                                   <SelectValue placeholder="Select your city" />
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent>
+                              <SelectContent className="bg-white border border-slate-200 shadow-lg">
                                 {CITIES.map(city => (
-                                  <SelectItem key={city} value={city}>{city}</SelectItem>
+                                  <SelectItem 
+                                    key={city} 
+                                    value={city}
+                                    className="hover:bg-slate-100 cursor-pointer"
+                                  >
+                                    {city}
+                                  </SelectItem>
                                 ))}
                               </SelectContent>
                             </Select>
@@ -200,7 +202,7 @@ export default function Apply() {
                           <FormItem>
                             <FormLabel className="text-slate-700 font-semibold">Area / Neighborhood</FormLabel>
                             <FormControl>
-                              <Input placeholder="e.g. DHA, Gulberg, F-10" className="h-12 rounded-xl" {...field} />
+                              <Input placeholder="e.g. DHA, Gulberg, F-10" className="h-12 rounded-xl bg-white" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -209,7 +211,6 @@ export default function Apply() {
                     </div>
                   </section>
 
-                  {/* Section 3: Teaching Preferences */}
                   <section className="space-y-6">
                     <div className="flex items-center gap-3 pb-4 border-b">
                       <div className="bg-green-50 p-2 rounded-lg text-green-600">
@@ -300,7 +301,6 @@ export default function Apply() {
                     />
                   </section>
 
-                  {/* Section 4: Qualification */}
                   <section className="space-y-6">
                     <div className="flex items-center gap-3 pb-4 border-b">
                       <div className="bg-orange-50 p-2 rounded-lg text-orange-600">
@@ -317,7 +317,7 @@ export default function Apply() {
                           <FormItem>
                             <FormLabel className="text-slate-700 font-semibold">Highest Qualification</FormLabel>
                             <FormControl>
-                              <Input placeholder="e.g. BS Computer Science" className="h-12 rounded-xl" {...field} />
+                              <Input placeholder="e.g. BS Computer Science" className="h-12 rounded-xl bg-white" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -334,7 +334,7 @@ export default function Apply() {
                               <Input 
                                 type="number" 
                                 min="0" 
-                                className="h-12 rounded-xl" 
+                                className="h-12 rounded-xl bg-white" 
                                 {...field} 
                                 onChange={e => field.onChange(parseInt(e.target.value) || 0)} 
                                 value={field.value}
@@ -355,7 +355,7 @@ export default function Apply() {
                           <div className="relative">
                             <DollarSign className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
                             <FormControl>
-                              <Input placeholder="e.g. 2000/hr or 25000/month" className="pl-10 h-12 rounded-xl" {...field} />
+                              <Input placeholder="e.g. 2000/hr or 25000/month" className="pl-10 h-12 rounded-xl bg-white" {...field} />
                             </FormControl>
                           </div>
                           <FormMessage />
