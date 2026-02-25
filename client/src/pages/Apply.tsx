@@ -726,7 +726,7 @@ export default function Apply() {
                     <FormField
                       control={form.control}
                       name="subjects"
-                      render={() => (
+                      render={({ field }) => (
                         <FormItem>
                           <div className="mb-4">
                             <FormLabel className="text-slate-700 font-semibold text-lg">
@@ -735,38 +735,29 @@ export default function Apply() {
                           </div>
                           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                             {SUBJECTS_LIST.map((subject) => (
-                              <FormField
+                              <div
                                 key={subject}
-                                control={form.control}
-                                name="subjects"
-                                render={({ field }) => {
-                                  return (
-                                    <FormItem
-                                      key={subject}
-                                      className="flex flex-row items-start space-x-3 space-y-0"
-                                    >
-                                      <FormControl>
-                                        <Checkbox
-                                          checked={field.value?.includes(subject)}
-                                          onCheckedChange={(checked) => {
-                                            return checked
-                                              ? field.onChange([...field.value, subject])
-                                              : field.onChange(
-                                                  field.value?.filter(
-                                                    (value) => value !== subject
-                                                  ) || []
-                                                )
-                                          }}
-                                          className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground border-slate-300"
-                                        />
-                                      </FormControl>
-                                      <FormLabel className="font-normal cursor-pointer text-slate-600">
-                                        {subject}
-                                      </FormLabel>
-                                    </FormItem>
-                                  )
-                                }}
-                              />
+                                className="flex flex-row items-start space-x-3 space-y-0"
+                              >
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value?.includes(subject)}
+                                    onCheckedChange={(checked) => {
+                                      return checked
+                                        ? field.onChange([...field.value, subject])
+                                        : field.onChange(
+                                            field.value?.filter(
+                                              (value) => value !== subject
+                                            ) || []
+                                          )
+                                    }}
+                                    className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground border-slate-300"
+                                  />
+                                </FormControl>
+                                <label className="text-sm font-normal cursor-pointer text-slate-600">
+                                  {subject}
+                                </label>
+                              </div>
                             ))}
                           </div>
                           <FormMessage />
@@ -1019,21 +1010,22 @@ export default function Apply() {
                                       <Checkbox
                                         checked={field.value?.includes(slot.value)}
                                         onCheckedChange={(checked) => {
+                                          const value = field.value || [];
                                           return checked
-                                            ? field.onChange([...(field.value || []), slot.value])
+                                            ? field.onChange([...value, slot.value])
                                             : field.onChange(
-                                                field.value?.filter(
-                                                  (value) => value !== slot.value
-                                                ) || []
+                                                value.filter(
+                                                  (v) => v !== slot.value
+                                                )
                                               )
                                         }}
                                         className="data-[state=checked]:bg-primary"
                                       />
                                     </FormControl>
                                     <div className="space-y-1">
-                                      <FormLabel className="font-semibold cursor-pointer">
+                                      <label className="text-sm font-semibold cursor-pointer">
                                         {slot.label}
-                                      </FormLabel>
+                                      </label>
                                       <p className="text-xs text-muted-foreground">
                                         {slot.time}
                                       </p>
@@ -1044,7 +1036,11 @@ export default function Apply() {
                             />
                           ))}
                         </div>
-                        <FormMessage />
+                        <FormField
+                          control={form.control}
+                          name="preferredTimeSlots"
+                          render={() => <FormMessage />}
+                        />
                       </div>
                     </div>
                   </section>
