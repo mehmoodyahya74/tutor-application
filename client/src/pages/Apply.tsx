@@ -35,6 +35,12 @@ const WEEKDAYS = [
   "Sunday"
 ];
 
+const TIME_SLOTS = [
+  { value: "Morning", label: "Morning", time: "5:00 AM - 12:00 PM" },
+  { value: "Afternoon", label: "Afternoon", time: "12:00 PM - 5:00 PM" },
+  { value: "Evening", label: "Evening", time: "5:00 PM - 10:00 PM" }
+];
+
 const TRAVEL_DISTANCES = ["5 km", "10 km", "20 km"];
 
 const CITIES = [
@@ -366,17 +372,13 @@ export default function Apply() {
       experienceYears: 0,
       demoClassAvailable: "",
       daysAvailable: [],
-      preferredTimeMorning: false,
-      preferredTimeAfternoon: false,
-      preferredTimeEvening: false,
+      preferredTimeSlots: [], // CHANGED: Now using array instead of three booleans
       ratePerHour: "",
       ratePerMonth: "",
       shortBio: "",
       confirmAccuracy: false,
-      expectedSalary: "",
       phoneNumber: "",
       email: "",
-      cnicFile: "",
     },
   });
 
@@ -494,27 +496,6 @@ export default function Apply() {
                               <Phone className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
                               <FormControl>
                                 <Input placeholder="0300 1234567" className="pl-10 h-12 rounded-xl bg-white" {...field} />
-                              </FormControl>
-                            </div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <FormField
-                        control={form.control}
-                        name="cnicFile"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-slate-700 font-semibold">
-                              Profile/CV Link <span className="text-slate-400 font-normal">(Optional)</span>
-                            </FormLabel>
-                            <div className="relative">
-                              <FileText className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
-                              <FormControl>
-                                <Input placeholder="Google Drive / LinkedIn / Dropbox link" className="pl-10 h-12 rounded-xl bg-white" {...field} value={field.value || ''} />
                               </FormControl>
                             </div>
                             <FormMessage />
@@ -707,7 +688,7 @@ export default function Apply() {
                       </motion.div>
                     )}
 
-                    {/* Students You Prefer - Updated to Radio Group (single selection) */}
+                    {/* Students You Prefer */}
                     <FormField
                       control={form.control}
                       name="preferredStudents"
@@ -1026,77 +1007,42 @@ export default function Apply() {
                           Select all time slots you are available
                         </p>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <FormField
-                            control={form.control}
-                            name="preferredTimeMorning"
-                            render={({ field }) => (
-                              <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 border rounded-xl bg-white">
-                                <FormControl>
-                                  <Checkbox
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
-                                    className="data-[state=checked]:bg-primary"
-                                  />
-                                </FormControl>
-                                <div className="space-y-1">
-                                  <FormLabel className="font-semibold cursor-pointer">
-                                    Morning
-                                  </FormLabel>
-                                  <p className="text-xs text-muted-foreground">
-                                    5:00 AM - 12:00 PM
-                                  </p>
-                                </div>
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name="preferredTimeAfternoon"
-                            render={({ field }) => (
-                              <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 border rounded-xl bg-white">
-                                <FormControl>
-                                  <Checkbox
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
-                                    className="data-[state=checked]:bg-primary"
-                                  />
-                                </FormControl>
-                                <div className="space-y-1">
-                                  <FormLabel className="font-semibold cursor-pointer">
-                                    Afternoon
-                                  </FormLabel>
-                                  <p className="text-xs text-muted-foreground">
-                                    12:00 PM - 5:00 PM
-                                  </p>
-                                </div>
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name="preferredTimeEvening"
-                            render={({ field }) => (
-                              <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 border rounded-xl bg-white">
-                                <FormControl>
-                                  <Checkbox
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
-                                    className="data-[state=checked]:bg-primary"
-                                  />
-                                </FormControl>
-                                <div className="space-y-1">
-                                  <FormLabel className="font-semibold cursor-pointer">
-                                    Evening
-                                  </FormLabel>
-                                  <p className="text-xs text-muted-foreground">
-                                    5:00 PM - 10:00 PM
-                                  </p>
-                                </div>
-                              </FormItem>
-                            )}
-                          />
+                          {TIME_SLOTS.map((slot) => (
+                            <FormField
+                              key={slot.value}
+                              control={form.control}
+                              name="preferredTimeSlots"
+                              render={({ field }) => {
+                                return (
+                                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 border rounded-xl bg-white">
+                                    <FormControl>
+                                      <Checkbox
+                                        checked={field.value?.includes(slot.value)}
+                                        onCheckedChange={(checked) => {
+                                          return checked
+                                            ? field.onChange([...(field.value || []), slot.value])
+                                            : field.onChange(
+                                                field.value?.filter(
+                                                  (value) => value !== slot.value
+                                                ) || []
+                                              )
+                                        }}
+                                        className="data-[state=checked]:bg-primary"
+                                      />
+                                    </FormControl>
+                                    <div className="space-y-1">
+                                      <FormLabel className="font-semibold cursor-pointer">
+                                        {slot.label}
+                                      </FormLabel>
+                                      <p className="text-xs text-muted-foreground">
+                                        {slot.time}
+                                      </p>
+                                    </div>
+                                  </FormItem>
+                                )
+                              }}
+                            />
+                          ))}
                         </div>
                         <FormMessage />
                       </div>
@@ -1257,7 +1203,7 @@ export default function Apply() {
                       ) : (
                         <>
                           Submit Application
-                          <ArrowRight className="ml-2 h-5 w-5" />
+                          <ArrowRight className="ml-2 h-5 w-6" />
                         </>
                       )}
                     </Button>
